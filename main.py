@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, redirect
 from pytube import YouTube
 
 # example video id: Up5Gm_Ls2oQ
@@ -31,9 +31,13 @@ def index():
     return get_data(url)
   else:
     return {
-      "message": "Please provide a valid URL in the URL params"
+      "message": "Please provide a valid URL in the URL params."
     }
+  
+@app.route("/github")
+def github():
+  return redirect("https://github.com/Honzoraptor31415/YoutubeAPI", code=302)
 
-@app.route("/<id>")
-def vid_id_route(id):
-  return get_data(id)
+@app.route("/author")
+def author():
+  return redirect("https://github.com/Honzoraptor31415", code=302)
