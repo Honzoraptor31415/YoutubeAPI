@@ -1,4 +1,4 @@
-# Youtube API
+# Youtube API [![Youtube](./assets/youtube.svg)]
 
 A simple yet kind of useful json API for getting data about youtube videos, channels or playlists.
 
