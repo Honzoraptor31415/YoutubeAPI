@@ -1,6 +1,5 @@
 from flask import Flask, request, redirect
-from pytube import YouTube
-import re
+from pytube import YouTube, Channel, Playlist
 
 # example video id: Up5Gm_Ls2oQ
 
@@ -10,10 +9,9 @@ def get_data(url: str):
   try:
     dot_split = url.split(".")
     dot_split_last = dot_split[len(dot_split)-1]
-    url_route_1stchar = dot_split_last.split("/")[1][0]
     url_route = dot_split_last.split("/")[1].split("?")[0]
     
-    if url_route_1stchar == "@":
+    if url_route == "channel":
       return get_channel_data(url)
     elif url_route == "watch":
       return get_vid_data(url)
@@ -26,48 +24,39 @@ def get_data(url: str):
     
   except:
     return {
-      "message": invalid_url_msg
+      "message": "Something went wrong"
     }
     
   
 def get_vid_data(url: str):
-  try:
-    ytd = YouTube(url)
-    print(url)
-    return {
-      "type": "video",
-      "title": ytd.title,
-      "author": ytd.author,
-      "thumbnail_url": ytd.thumbnail_url,
-      "channel_url": ytd.channel_url,
-      "length_seconds": ytd.length,
-      "keywords": ytd.keywords,
-      "publish_data": ytd.publish_date,
-      "views": ytd.views
-    }
-  except:
-    return {
-      "message": invalid_url_msg
-    }
+  ytd = YouTube(url)
+  print(url)
+  return {
+    "type": "video",
+    "title": ytd.title,
+    "author": ytd.author,
+    "thumbnail_url": ytd.thumbnail_url,
+    "channel_url": ytd.channel_url,
+    "length_seconds": ytd.length,
+    "keywords": ytd.keywords,
+    "publish_data": ytd.publish_date,
+    "views": ytd.views
+  }
 
 def get_channel_data(url: str):
-  # ytd = YouTube(url)
-  # print(url)
+  ytc = Channel(url)
+  print(f"\nChannel data:\n\n{ytc}")
   return {
-    "type": "channel"
-    # "title": ytd.title,
-    # "author": ytd.author,
-    # "thumbnail_url": ytd.thumbnail_url,
-    # "channel_url": ytd.channel_url,
-    # "length_seconds": ytd.length,
-    # "keywords": ytd.keywords,
-    # "publish_data": ytd.publish_date,
-    # "views": ytd.views
+    "type": "channel",
+    "channel_name": ytc.channel_name
   }
 
 def get_playlist_data(url: str):
+  ytp = Playlist(url)
+  print(ytp)
   return {
-    "type": "playlist"
+    "type": "playlist",
+    "video_urls": ytp
   }
 
 app = Flask(__name__)
