@@ -1,8 +1,6 @@
 from flask import Flask, request, redirect
 from pytube import YouTube, Channel, Playlist
 
-# example video id: Up5Gm_Ls2oQ
-
 invalid_url_msg = "Please provide a valid URL"
 
 def get_data(url: str):
@@ -52,23 +50,30 @@ def get_channel_data(url: str):
   }
 
 def get_playlist_data(url: str):
-  ytp = Playlist(url)
-  print(ytp)
-  return {
-    "type": "playlist",
-    "video_urls": ytp
-  }
+  try:
+    ytp = Playlist(url)
+    return {
+      "type": "playlist",
+      "video_urls": ytp
+    }
+  except:
+    return {
+      "message": "Something went wrong"
+    }
+
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
+  print(request.url)
   url = request.args.get("url")
   if url:
     return get_data(url)
   else:
     return {
-      "message": invalid_url_msg
+      "message": f"{invalid_url_msg}, or take a look at /author for more info about the creator or /github for source code.",
+      "valid_url_example": "/?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     }
   
 @app.route("/github")
